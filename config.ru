@@ -4,6 +4,8 @@ require 'openssl'
 
 class WebhookProxy
   def call(env)
+    return [200, {'Content-Type' => 'text/html'}, ["Hello world"]] if env["REQUEST_METHOD"] != "POST"
+
     request_body = env['rack.input'] ? env['rack.input'].read : ""
     verify_signature(request_body, env)
     uri = URI.parse("https://api.travis-ci.org/repo/#{ENV.fetch('REPO_SLUG')}/requests")
